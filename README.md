@@ -28,7 +28,7 @@ This work introduces a 4×4 determinant reduction `det(I₄ + AS) = 1` that capt
 
 ### Real-Line Extensions
 - `prime_kernel_pi_lens_logdomain.py` - Spectral lens for prime counting π(x)
-- `triangle_pi_approx.py` - Triangle gap geometric approximation (sub-unit precision!)
+- `triangle_pi_approx.py` - Triangle gap geometric approximation (sub-unit precision)
 
 ### Validation Data
 - `00_*.csv` - Sanity checks and baseline tests
