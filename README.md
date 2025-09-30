@@ -19,7 +19,7 @@ This work introduces a 4×4 determinant reduction `det(I₄ + AS) = 1` that capt
 ## 🗂️ **Repository Structure**
 
 ### Core Theory
-- `rh_operator_framework_submission_v3.tex` - Complete mathematical paper with proofs
+- `rh_operator_framework_submission_v3.tex` - Mathematical paper
 - `refs.bib` - Bibliography
 
 ### Computational Tools
@@ -131,10 +131,4 @@ This work is open for community validation, extension, and collaboration. Please
 - **Paper**: Creative Commons BY 4.0 (see LICENSE-PAPER)
 - **Data**: CC0 Public Domain
 
-## 📧 **Contact**
-
-For mathematical discussions, error reports, or collaboration inquiries, please open an issue or contact [your contact info].
-
 ---
-
-*"The critical-line balance emerges not from computational coincidence, but from the mathematical structure of Hilbert pairing and even-kernel hand-off."*
