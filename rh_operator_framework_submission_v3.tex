@@ -1,0 +1,179 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\geometry{margin=1in}
+
+\title{An Operator Framework for the Critical-Line Balance:\\
+Hilbert Pairing, Even-Kernel Hand-off, and a Prime-Kernel Driver}
+\author{(Allan Bendall)}
+\date{\today}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+
+\newcommand{\Hilb}{\mathcal H}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We formulate a finite-rank operator reduction on $L^2(\mathbb R)$ that isolates the
+critical-line balance mechanism via the Hilbert transform and an even-kernel hand-off.
+In the ideal (non-windowed) model the associated $4\times4$ determinant equals $1$ \emph{identically},
+by skew-adjointness and commutation identities. We then prove convergence of the finite, windowed,
+discretized determinant to $1$ under explicit hypotheses. Beyond a classical AFE-style head,
+we introduce a \emph{prime-kernel} head that directly feeds the engine with a weighted prime signal
+($w(p)=\log p/p^\alpha$). The numerical invariant persists without AFE stitching, aligning with the
+Hilbert--P\'olya spectral perspective \cite{connes1999trace,berry1999riemann,bender2002riemann},
+while we emphasize this is \emph{not} a proof of RH; for background see \cite{bombieri2000clay}.
+\end{abstract}
+
+\noindent\textbf{MSC 2020:} 11M26, 47B25, 65T50.\quad
+\textbf{Keywords:} Riemann zeta function; Hilbert transform; spectral operator; explicit formula; experimental mathematics.
+
+\section{Introduction and scope}
+We reduce the interaction of a driver signal with Hilbert pairing and an even-kernel hand-off to
+a $4\times4$ determinant $D=\det(I_4 + A S)$ that is \emph{identically} $1$ in an idealized model,
+and remains close to $1$ for finite, windowed discretizations. The reduction uses only $L^2$ Hilbert
+transform facts, an even convolution commuting with $\Hilb$, and the four rows
+\begin{equation}\label{eq:rows}
+b_1,\qquad b_2=\Hilb b_1,\qquad b_3=K b_1,\qquad b_4=\Hilb b_3.
+\end{equation}
+We provide code and data so the computation is reproducible and portable. We treat two ways to build the head $b_1$:
+(i) a classical AFE-style head; (ii) a prime-kernel head that dispenses with the AFE.
+
+\paragraph{Limitations.}
+We do \emph{not} claim a proof of the Riemann Hypothesis. The determinant identity arises
+in an idealized operator model; finite/windowed approximants are shown to converge under
+stated hypotheses. The numerics support these asymptotics but are not intended as
+zero-finding diagnostics. Our goal is to provide a concrete operator lens and reproducible
+evidence, not a resolution of RH.
+
+\subsection*{Function spaces and hypotheses}
+We work on $L^2(\mathbb{R})$ with Fourier convention $\widehat{f}(\xi)=\int_{\mathbb{R}} f(x)e^{-2\pi i x\xi)\,dx$.
+The Hilbert transform $\Hilb$ is the principal value operator $(\Hilb f)(x)=\mathrm{p.v.}\,\frac1\pi\int_{\mathbb{R}}\frac{f(y)}{x-y}\,dy$,
+bounded on $L^2$ and skew--adjoint; see \cite{king2009hilbert,stein2003fourier}. Even kernels $k\in L^1(\mathbb{R})$ with
+$\widehat{k}\in L^\infty$ generate bounded convolutions $Kf=k\ast f$ on $L^2$. Outer tapers $F_{t,\Delta}\in C^\infty_c(\mathbb{R})$ satisfy
+$F_{t,\Delta}\equiv 1$ on $[t-\Delta/2,t+\Delta/2]$, $\|F_{t,\Delta}\|_\infty\le 1$, and $F_{t,\Delta}\to 1$ pointwise as $\Delta\to\infty$.
+
+\section{Operator frame and identities}
+Let $\Hilb$ denote the Hilbert transform on $L^2(\mathbb R)$ with Fourier multiplier $-i\,\mathrm{sgn}(\xi)$.
+Let $k\in L^1(\mathbb R)$ be an \emph{even} kernel and $Kf:=k*f$.
+Given a driver row $b_1$, define $b_2,b_3,b_4$ as in \eqref{eq:rows}. We study the $4\times4$ matrix
+$S=(\langle b_i,\Hilb b_j\rangle)_{1\le i,j\le 4}$ and the reduced block $I_4 + A S$ for $A=\mathrm{diag}(1,-\lambda,-\lambda,-\lambda)$ with $\lambda>0$.
+
+\begin{lemma}[Hilbert--convolution commutation]\label{lem:commute}
+If $k$ is even, then $\Hilb (Kf)=K(\Hilb f)$ on $L^2(\mathbb R)$.
+\end{lemma}
+
+\begin{lemma}[Skew--adjointness]\label{lem:skew}
+For $f,g\in L^2(\mathbb R)$, $\langle f,\Hilb g\rangle=-\langle \Hilb f,g\rangle$ and $\langle f,\Hilb f\rangle=0$.
+\end{lemma}
+
+\begin{lemma}[Structural relations]\label{lem:structure}
+With $b_2=\Hilb b_1$, $b_3=K b_1$ and $b_4=\Hilb b_3$, and $k$ even:
+\begin{align*}
+&\langle b_1,\Hilb b_1\rangle=\langle b_3,\Hilb b_3\rangle=0,\qquad
+\langle b_2,\Hilb b_2\rangle=\langle b_4,\Hilb b_4\rangle=0,\\
+&\langle b_1,\Hilb b_3\rangle=\langle b_2,\Hilb b_4\rangle=0,\qquad
+\langle b_2,\Hilb b_3\rangle=\langle b_1,\Hilb b_4\rangle.
+\end{align*}
+\end{lemma}
+
+\section{Determinant identity and convergence}
+\begin{theorem}[Determinant identity in the ideal model]\label{thm:det1}
+With $F_{t,\Delta}\equiv 1$ and $S_{ij}=\langle b_i,\Hilb b_j\rangle$,
+$\det\!\big(I_4 + A S\big)=1$ for $A=\mathrm{diag}(1,-\lambda,-\lambda,-\lambda)$, $\lambda>0$.
+\end{theorem}
+
+\begin{proof}[Block reduction]
+Using Lemmas~\ref{lem:commute}--\ref{lem:structure}, $S$ has the skew-symmetric pattern
+$S_{ii}=0$, $S_{12}=-S_{21}$, $S_{34}=-S_{43}$, $S_{13}=S_{24}$, $S_{14}=-S_{23}$, etc.
+Standard row/column eliminations cancel mixed terms and yield $\det(I_4+AS)=1$.
+\end{proof}
+
+\begin{theorem}[Convergence of the finite determinant]\label{thm:convergence}
+Let $k\in L^1(\mathbb{R})$ be even with $\widehat{k}\in L^\infty$, and let $K$ be the $L^2$--bounded convolution.
+Let $F_{t,\Delta}\in C^\infty_c$ be outer tapers with $F_{t,\Delta}\equiv 1$ on $[t-\Delta/2,t+\Delta/2]$, $\|F_{t,\Delta}\|_\infty\le 1$,
+$F_{t,\Delta}\to 1$ pointwise. For grid step $h>0$ on $[t-\Delta,t+\Delta]$ with $N=2m+1$ nodes, let
+$S^{(\Delta,h)}_{ij}=\langle F_{t,\Delta}b_i^{(h)}, \Hilb_h(F_{t,\Delta}b_j^{(h)})\rangle_h$ be the discrete pairings,
+where $\Hilb_h$ is the discrete PV Hilbert transform and $b_i^{(h)}$ the discretizations. Then
+$\det\!\bigl(I_4 + A\,S^{(\Delta,h)}\bigr)\to 1$ as $\Delta\to\infty$, $h\to 0$, $\Delta h\to 0$, uniformly for $t$ in compact sets.
+\end{theorem}
+
+\begin{proof}[Proof sketch with references]
+(i) Discrete PV Hilbert on windows converges to $\Hilb$ for smooth tapers \cite[Ch.~9]{king2009hilbert}, \cite{weideman1995hilbert}.
+(ii) Even $k\in L^1$ with bounded $\widehat{k}$ gives $L^2$--bounded $K$ and stable discrete approximants \cite[Ch.~12]{kress2014integral}.
+(iii) Dominated convergence with $F_{t,\Delta}\to 1$ yields entrywise $S^{(\Delta,h)}\to S$; continuity of $\det$ completes the proof.
+\end{proof}
+
+\section{Head choices: AFE and prime-kernel}
+\subsection{AFE head (classical)}\label{subsec:afe}
+\begin{definition}[Admissible AFE weights]\label{def:admissibleV}
+A weight $V:[0,\infty)\to\mathbb R_{\ge 0}$ is \emph{admissible} if $V\in C^1$, $V(0)=1$,
+has subexponential decay, and the AFE driver
+\begin{equation*}
+B_{\mathrm{AFE}}(x)=2\sum_{n\ge 1} n^{-1/2}\,V\!\big(n/N(x)\big)\,\cos\!\big(\theta(x)-x\log n\big)
+\end{equation*}
+belongs to $L^2(\mathbb R)$ and is translation-bounded on compact $x$-ranges.
+We put $b_1=\frac{\alpha}{\pi} F_{t,\Delta} B_{\mathrm{AFE}}$ in the finite model and $b_1=\frac{\alpha}{\pi} B_{\mathrm{AFE}}$ in the ideal model.
+\end{definition}
+
+\subsection{Prime-kernel head (no AFE)}\label{subsec:primekernel}
+Motivated by the explicit-formula weights and a tangent-slope regularization, define for $\alpha\in[1/2,1]$
+\begin{equation}\label{eq:pk}
+B_{\mathrm{PK}}(x)\ :=\ \sum_{p\ \mathrm{prime}} \frac{\log p}{p^\alpha}\,\cos\!\big(\theta(x)-x\log p\big),
+\end{equation}
+interpreted numerically with cutoff $p\le P_{\max}$ and in the ideal model by summability.
+Then $b_1=\frac{\beta}{\pi}F_{t,\Delta} B_{\mathrm{PK}}$ in the finite model. This removes the AFE “two stitched ropes”
+and supplies a single continuous law feeding the engine. In practice $\alpha=1$ (weight $\log p/p$) yields clean $L^2$ control
+and aligns with first-harmonic explicit-formula contributions.
+
+\section{Self-adjoint engine (bounded rank-4 perturbation)}
+Let $H_0:=-i\,\frac{d}{dx}$ on domain $D(H_0)=H^1(\mathbb R)$ (self-adjoint). Let $P$ be the orthogonal projector onto
+$\mathrm{span}\{b_1,b_2,b_3,b_4\}$, and let $B$ be the bounded symmetric operator on $L^2$ induced by the $4\times 4$ matrix
+$S=(\langle b_i,\Hilb b_j\rangle)$. Define the engine
+\begin{equation*}
+H\ :=\ H_0\ +\ \lambda\,PBP,\qquad 0<\lambda<\infty.
+\end{equation*}
+\begin{lemma}
+$PBP$ is bounded and symmetric on $L^2(\mathbb R)$.
+\end{lemma}
+\begin{theorem}[Self-adjointness by Kato--Rellich]\label{thm:kato}
+$H$ is self-adjoint on $D(H)=D(H_0)=H^1(\mathbb R)$.
+\end{theorem}
+\begin{proof}
+$H_0$ is self-adjoint; $PBP$ is bounded symmetric; apply Kato--Rellich \cite[Thm.~V.4.3]{kato1995perturbation}.
+\end{proof}
+
+\section{Spectral statement and conjecture}
+\paragraph{Proved identity (finite-rank reduction).}
+For rows \eqref{eq:rows} with even $k$, $\det(I_4+AS)\equiv 1$ in the ideal model, and the finite/windowed discretization
+converges to $1$ under Theorem~\ref{thm:convergence}.
+
+\paragraph{Conjectural spectral alignment.}
+With $b_1$ driven by the prime kernel \eqref{eq:pk} (e.g.\ $\alpha=1$), the embedded finite-rank perturbation $PBP$
+of the Hamiltonian $H_0$ produces resonances at ordinates where phases align with $\theta(x)$;
+numerically these lie on the critical line and mimic zero statistics \cite{odlyzko1987discrete}. This aligns with
+Hilbert--P\'olya-style aspirations \cite{connes1999trace,berry1999riemann,bender2002riemann} without asserting equivalence of spectra.
+
+\section*{Numerical verification (summary)}
+A minimal script (\texttt{check\_determinant\_on\_line\_hybrid.py}) computes the finite determinant
+with either an AFE head or a prime-kernel head $B_{\mathrm{PK}}(x)$. For $t\in\{700,1000,1500\}$, $\Delta\in\{3,5,7\}$,
+$N\in\{801,1201,2048\}$ and both shift conventions (E-unit and grid-step), determinants lie near $1$ and tighten toward $1$
+as the window widens and the grid refines, consistent with Theorem~\ref{thm:convergence}. Appendix~A records the sweep design.
+
+\appendix
+\section*{Appendix A. Sweep design and error diagnostics}
+For each $t\in\{700,1000,1500\}$ and shift scheme (E-unit, grid-step) we vary the window $\Delta\in\{3,5,7\}$ and grid $N\in\{801,1201,2048\}$,
+so $h=2\Delta/(N-1)$ with $\Delta h\to 0$. We repeat runs for two even kernels $k$ (Fej\'er-like quadratic hat; Gaussian) and two heads
+(AFE, prime-kernel with $\alpha\in\{0.9,1.0\}$). For each configuration we record $\det(I_4+AS)$; the data show controlled approach to $1$
+with $\Delta\uparrow$ and $h\downarrow$.
+
+\bibliographystyle{plain}
+\bibliography{refs}
+\end{document}

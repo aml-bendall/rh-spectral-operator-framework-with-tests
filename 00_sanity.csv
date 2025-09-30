@@ -1,0 +1,2 @@
+status,error,t,Delta,N,h,Pmax,alpha,beta,lam,kernel,weight_mode,det,dev,nprimes,t_sieve,t_total
+ok,,1000.0,5.0,1201,0.008333333333333333,20000,1.0,1.0,0.1,fejer,logp_over_p,0.9988023268357388,0.001197673164261226,2262,8.58000130392611e-05,0.041906400001607835

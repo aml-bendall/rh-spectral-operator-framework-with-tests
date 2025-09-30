@@ -1,0 +1,2 @@
+status,error,t,Delta,N,h,Pmax,alpha,beta,lam,kernel,weight_mode,det,dev,nprimes,t_sieve,t_total
+ok,,3000.0,7.0,4097,0.00341796875,60000,1.0,1.0,0.1,gauss,logp_over_p,0.9847773323792519,0.015222667620748087,6057,0.00015109998639672995,0.41936509998049587

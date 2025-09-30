@@ -1,0 +1,2 @@
+tprime,dev,t,Delta,N,Pmax,alpha,beta,lam,kernel,weight_mode
+2997.0,0.004213077330710413,3000.0,7.0,4099,60000,1.0,1.0,0.1,gauss,logp_over_p
